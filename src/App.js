@@ -34,7 +34,7 @@ const SECTIONS  = ["ホール","アフター","BAR","ソムリエ"];
 const SEC_COLOR = { "ホール":"#C8A84B","アフター":"#A89060","BAR":"#8A9AAA","ソムリエ":"#C4A870" };
 
 // ── STAFF ─────────────────────────────────────────────────────────────
-const INITIAL_STAFF_DATA = {
+const STAFF_BASE = [
   {id:1,  last:"堀口",   section:"ホール"},
   {id:2,  last:"木村大", section:"ホール"},
   {id:3,  last:"杉木",   section:"ホール"},
@@ -83,7 +83,7 @@ const INITIAL_STAFF_DATA = {
   {id:46, last:"東",     section:"BAR"},
   {id:47, last:"野田",   section:"BAR"},
   {id:48, last:"大谷",   section:"ソムリエ"},
-};
+];
 
 const DEFAULT_SD = { fullName:"", startDate:"", lv:1, shiftRate:0, lateCount:0, score:0 };
 
