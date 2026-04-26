@@ -2,20 +2,20 @@ import { useState, useEffect, useMemo } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "firebase/firestore";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
- 
+
 // ━━━ ① ここをFirebaseの設定に書き換えてください ━━━
 const FIREBASE_CONFIG = {
-  apiKey:            "AIzaSyBLG1Xkh1Oba_gdwG_jZAPaV8hLIDBQBsA",
-  authDomain:        "bekkan-pa.firebaseapp.com",
-  projectId:         "bekkan-pa",
-  storageBucket:     "bekkan-pa.firebasestorage.app",
-  messagingSenderId: "688298009058",
-  appId:             "1:688298009058:web:ace8b15bfd40604aef59bb",
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID",
 };
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
 const db   = getFirestore(firebaseApp);
 const auth = getAuth(firebaseApp);
- 
+
 // ── TOKENS ───────────────────────────────────────────────────────────
 const G    = "#C8A84B";
 const GB   = "rgba(200,168,75,0.08)";
@@ -29,10 +29,10 @@ const BR2  = "#2E2E2E";
 const TX   = "#EDE8DF";
 const TM   = "#888888";
 const TS   = "#3A3A3A";
- 
+
 const SECTIONS  = ["ホール","アフター","BAR","ソムリエ"];
 const SEC_COLOR = { "ホール":"#C8A84B","アフター":"#A89060","BAR":"#8A9AAA","ソムリエ":"#C4A870" };
- 
+
 // ── STAFF ─────────────────────────────────────────────────────────────
 const STAFF_BASE = [
   {id:1,  last:"堀口",   section:"ホール"},
@@ -84,9 +84,9 @@ const STAFF_BASE = [
   {id:47, last:"野田",   section:"BAR"},
   {id:48, last:"大谷",   section:"ソムリエ"},
 ];
- 
+
 const DEFAULT_SD = { fullName:"", startDate:"", lv:1, shiftRate:0, lateCount:0, score:0 };
- 
+
 // Firestoreデータ → なければ初期値 → なければデフォルト の順で参照
 function getStaffData(paId, allStaffData) {
   const fromDB = allStaffData[paId];
@@ -103,8 +103,7 @@ function getStaffData(paId, allStaffData) {
     photo:     fromDB.photo     || "",
   };
 }
- 
-const INITIAL_STAFF_DATA = {   startDate:"2011-07-02", lv:5, shiftRate:0, lateCount:0, score:0},
+  1:  {fullName:"堀口 敬巧",   startDate:"2011-07-02", lv:5, shiftRate:0, lateCount:0, score:0},
   2:  {fullName:"木村 大翔",   startDate:"2024-05-01", lv:3, shiftRate:0, lateCount:0, score:0},
   3:  {fullName:"杉野 航平",   startDate:"2024-05-01", lv:4, shiftRate:0, lateCount:0, score:0},
   4:  {fullName:"西川 旺輝",   startDate:"2024-05-01", lv:1, shiftRate:0, lateCount:0, score:0},
@@ -138,7 +137,7 @@ const INITIAL_STAFF_DATA = {   startDate:"2011-07-02", lv:5, shiftRate:0, lateCo
   45: {fullName:"武田 裕司",   startDate:"2026-02-02", lv:1, shiftRate:0, lateCount:0, score:0},
   48: {fullName:"大山 提地",   startDate:"2025-07-22", lv:1, shiftRate:0, lateCount:0, score:0},
 };
- 
+
 const PHASE_META = [
   {lv:1, phase:"PHASE 1", label:"新人",     wage:1400},
   {lv:2, phase:"PHASE 2", label:"一人前",   wage:1500},
@@ -146,7 +145,7 @@ const PHASE_META = [
   {lv:4, phase:"PHASE 4", label:"ベテラン", wage:1800},
   {lv:5, phase:"PHASE 5", label:"エース",   wage:2000},
 ];
- 
+
 const CHECKLIST = {
   1:[
     {cat:"心構え・基本姿勢", items:[
@@ -324,7 +323,7 @@ const CHECKLIST = {
     {cat:"昇格要件", promo:true, items:["出勤日数が月18日以上","勤続1年以上"]},
   ],
 };
- 
+
 // ── HELPERS ──────────────────────────────────────────────────────────
 function calcTenure(startDate) {
   if (!startDate) return null;
@@ -335,15 +334,15 @@ function calcTenure(startDate) {
   if (months >= 12) return `${Math.floor(months / 12)}年${months % 12}ヶ月`;
   return `${months}ヶ月`;
 }
- 
+
 function fmtDate(d) {
   return d ? d.replace(/-/g, "/") : "";
 }
- 
+
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
- 
+
 function compressImage(file) {
   return new Promise(function(resolve) {
     const reader = new FileReader();
@@ -366,7 +365,7 @@ function compressImage(file) {
     reader.readAsDataURL(file);
   });
 }
- 
+
 function allItemKeys(lv) {
   const keys = [];
   Object.entries(CHECKLIST).forEach(([k, cats]) => {
@@ -377,7 +376,7 @@ function allItemKeys(lv) {
   });
   return keys;
 }
- 
+
 // ── FIRESTORE I/O ─────────────────────────────────────────────
 async function sGet(key) {
   try {
@@ -394,7 +393,7 @@ function sListen(key, cb) {
     cb(snap.exists() ? snap.data().v : null);
   });
 }
- 
+
 // ── ATOMS ─────────────────────────────────────────────────────────────
 function GoldBar({ pct, h }) {
   const height = h || 2;
@@ -405,7 +404,7 @@ function GoldBar({ pct, h }) {
     </div>
   );
 }
- 
+
 function PhaseTag({ phase }) {
   return (
     <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: G, fontFamily: "monospace" }}>
@@ -413,7 +412,7 @@ function PhaseTag({ phase }) {
     </span>
   );
 }
- 
+
 function Stars({ value, onChange }) {
   const [hov, setHov] = useState(0);
   return (
@@ -434,7 +433,7 @@ function Stars({ value, onChange }) {
     </div>
   );
 }
- 
+
 const inputStyle = {
   width: "100%", background: C3, border: "1px solid " + BR2,
   borderRadius: 8, padding: "8px 10px", color: TX, fontSize: 12,
@@ -444,19 +443,19 @@ const labelStyle = {
   fontSize: 10, color: TM, fontWeight: 700, letterSpacing: "0.06em",
   textTransform: "uppercase", marginBottom: 5, display: "block",
 };
- 
+
 // ── CHECKLIST TAB ─────────────────────────────────────────────────────
 function ChecklistTab({ paId, paLv }) {
   const [checks, setChecks] = useState({});
   const [loading, setLoading] = useState(true);
- 
+
   useEffect(function() {
     sGet("bekkan-cl-" + paId).then(function(d) {
       setChecks(d || {});
       setLoading(false);
     });
   }, [paId]);
- 
+
   async function toggle(key, lvNum) {
     if (lvNum > paLv) return;
     const next = Object.assign({}, checks);
@@ -468,11 +467,11 @@ function ChecklistTab({ paId, paLv }) {
     setChecks(next);
     await sSet("bekkan-cl-" + paId, next);
   }
- 
+
   if (loading) {
     return <div style={{ padding: 32, color: TM, textAlign: "center" }}>読み込み中...</div>;
   }
- 
+
   return (
     <div style={{ paddingBottom: 40 }}>
       {Object.entries(CHECKLIST).map(function([lv, cats]) {
@@ -485,7 +484,7 @@ function ChecklistTab({ paId, paLv }) {
         const done = lvKeys.filter(function(k) { return checks[k]; }).length;
         const pct = Math.round((done / lvKeys.length) * 100);
         const active = lvNum <= paLv;
- 
+
         return (
           <div key={lv} style={{ opacity: active ? 1 : 0.4 }}>
             <div style={{ padding: "14px 20px 10px", borderBottom: "1px solid " + BR, background: lvNum === paLv ? GB : "transparent", position: "sticky", top: 0, zIndex: 2 }}>
@@ -537,10 +536,10 @@ function ChecklistTab({ paId, paLv }) {
     </div>
   );
 }
- 
+
 // ── OJT TAB ──────────────────────────────────────────────────────────
 const EMPTY_SESSION = { date: "", trainer: "", phase: "PHASE 1", content: "", rating: 0 };
- 
+
 function OJTTab({ paId }) {
   const [sessions, setSessions] = useState(
     Array.from({ length: 10 }, function(_, i) {
@@ -550,19 +549,19 @@ function OJTTab({ paId }) {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(Object.assign({}, EMPTY_SESSION));
   const [loading, setLoading] = useState(true);
- 
+
   useEffect(function() {
     sGet("bekkan-ojt-" + paId).then(function(d) {
       if (d) setSessions(d);
       setLoading(false);
     });
   }, [paId]);
- 
+
   function openEdit(s) {
     setForm({ date: s.date, trainer: s.trainer, phase: s.phase || "PHASE 1", content: s.content, rating: s.rating });
     setEditing(s.session);
   }
- 
+
   async function saveSession() {
     const next = sessions.map(function(s) {
       return s.session === editing ? Object.assign({}, s, form) : s;
@@ -571,7 +570,7 @@ function OJTTab({ paId }) {
     await sSet("bekkan-ojt-" + paId, next);
     setEditing(null);
   }
- 
+
   async function clearSession(num) {
     const next = sessions.map(function(s) {
       return s.session === num ? Object.assign({ session: num }, EMPTY_SESSION) : s;
@@ -580,13 +579,13 @@ function OJTTab({ paId }) {
     await sSet("bekkan-ojt-" + paId, next);
     setEditing(null);
   }
- 
+
   if (loading) {
     return <div style={{ padding: 32, color: TM, textAlign: "center" }}>読み込み中...</div>;
   }
- 
+
   const filled = sessions.filter(function(s) { return s.content || s.date; }).length;
- 
+
   return (
     <div style={{ paddingBottom: 40 }}>
       <div style={{ padding: "12px 20px 14px", borderBottom: "1px solid " + BR }}>
@@ -596,7 +595,7 @@ function OJTTab({ paId }) {
         </div>
         <GoldBar pct={(filled / 10) * 100} />
       </div>
- 
+
       {sessions.map(function(s) {
         const hasData = !!(s.content || s.date);
         const isEditing = editing === s.session;
@@ -623,7 +622,7 @@ function OJTTab({ paId }) {
                 {!hasData && <span style={{ fontSize: 10, color: TM }}>＋ 記録を追加</span>}
               </div>
             </div>
- 
+
             {(hasData && !isEditing) && (
               <div style={{ padding: "12px 14px" }}>
                 {s.trainer && (
@@ -634,7 +633,7 @@ function OJTTab({ paId }) {
                 </div>
               </div>
             )}
- 
+
             {isEditing && (
               <div style={{ padding: 14 }} onClick={function(e) { e.stopPropagation(); }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
@@ -684,7 +683,7 @@ function OJTTab({ paId }) {
     </div>
   );
 }
- 
+
 // ── PROFILE TAB ───────────────────────────────────────────────────────
 function ProfileTab({ pa, staffData, onUpdate }) {
   const [editing, setEditing] = useState(false);
@@ -697,7 +696,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
     score:     staffData.score     || 0,
     photo:     staffData.photo     || "",
   });
- 
+
   useEffect(function() {
     setForm({
       fullName:  staffData.fullName  || "",
@@ -709,20 +708,20 @@ function ProfileTab({ pa, staffData, onUpdate }) {
       photo:     staffData.photo     || "",
     });
   }, [staffData]);
- 
+
   async function save() {
     await onUpdate(form);
     setEditing(false);
   }
- 
+
   const tenure = calcTenure(staffData.startDate);
   const lv = staffData.lv || 1;
   const meta = PHASE_META[lv - 1];
- 
+
   if (editing) {
     return (
       <div style={{ padding: "20px 20px 40px" }}>
- 
+
         {/* Photo upload */}
         <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           <label style={labelStyle}>顔写真</label>
@@ -750,12 +749,12 @@ function ProfileTab({ pa, staffData, onUpdate }) {
             </button>
           )}
         </div>
- 
+
         <div style={{ marginBottom: 10 }}>
           <label style={labelStyle}>フルネーム</label>
           <input value={form.fullName} onChange={function(e) { setForm(function(f) { return Object.assign({}, f, { fullName: e.target.value }); }); }} placeholder={pa.last + "（フルネームを入力）"} style={inputStyle} />
         </div>
- 
+
         <div style={{ marginBottom: 12, padding: 14, background: GB, border: "1px solid " + G + "33", borderRadius: 10 }}>
           <label style={Object.assign({}, labelStyle, { color: G })}>入社日 — 勤続年数が自動計算されます</label>
           <input type="date" value={form.startDate} onChange={function(e) { setForm(function(f) { return Object.assign({}, f, { startDate: e.target.value }); }); }} style={Object.assign({}, inputStyle, { border: "1px solid " + G + "55" })} />
@@ -763,7 +762,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
             <div style={{ fontSize: 11, color: G, marginTop: 8 }}>→ 勤続 {calcTenure(form.startDate)}</div>
           )}
         </div>
- 
+
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           <div>
             <label style={labelStyle}>ランク</label>
@@ -776,7 +775,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
             <Stars value={form.score} onChange={function(r) { setForm(function(f) { return Object.assign({}, f, { score: r }); }); }} />
           </div>
         </div>
- 
+
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
           <div>
             <label style={labelStyle}>出勤率(%)</label>
@@ -787,7 +786,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
             <input type="number" min={0} value={form.lateCount} onChange={function(e) { setForm(function(f) { return Object.assign({}, f, { lateCount: Number(e.target.value) }); }); }} style={inputStyle} />
           </div>
         </div>
- 
+
         <div style={{ display: "flex", gap: 8 }}>
           <button onClick={save} style={{ flex: 1, background: G, color: "#000", border: "none", borderRadius: 8, padding: "10px 0", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>保存</button>
           <button onClick={function() { setEditing(false); }} style={{ background: "transparent", color: TM, border: "1px solid " + BR2, borderRadius: 8, padding: "10px 16px", fontSize: 12, cursor: "pointer" }}>キャンセル</button>
@@ -795,10 +794,10 @@ function ProfileTab({ pa, staffData, onUpdate }) {
       </div>
     );
   }
- 
+
   return (
     <div style={{ padding: "20px 20px 40px" }}>
- 
+
       {/* Photo display in view mode */}
       {staffData.photo && (
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
@@ -807,7 +806,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
           </div>
         </div>
       )}
- 
+
       <div style={{ background: staffData.startDate ? GB : C2, border: "1px solid " + (staffData.startDate ? G + "44" : BR), borderRadius: 12, padding: "16px 18px", marginBottom: 10 }}>
         <div style={{ fontSize: 10, color: TM, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>入社日 · 勤続年数</div>
         {staffData.startDate ? (
@@ -824,7 +823,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
           </div>
         )}
       </div>
- 
+
       {[
         { label: "シフト出勤率", value: (staffData.shiftRate || 0) + "%", pct: staffData.shiftRate || 0 },
         { label: "遅刻・欠勤（累計）", value: (staffData.lateCount || 0) + "回", pct: Math.max(0, 100 - (staffData.lateCount || 0) * 8) },
@@ -839,12 +838,12 @@ function ProfileTab({ pa, staffData, onUpdate }) {
           </div>
         );
       })}
- 
+
       <div style={{ background: C2, border: "1px solid " + BR, borderRadius: 12, padding: "14px 18px", marginBottom: 10 }}>
         <div style={{ fontSize: 10, color: TM, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 8 }}>上司評価スコア</div>
         <Stars value={staffData.score || 0} />
       </div>
- 
+
       <div style={{ background: C2, border: "1px solid " + BR, borderRadius: 12, padding: "14px 18px", marginBottom: 16 }}>
         <div style={{ fontSize: 10, color: TM, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>基本情報</div>
         {[
@@ -860,14 +859,14 @@ function ProfileTab({ pa, staffData, onUpdate }) {
           );
         })}
       </div>
- 
+
       <button onClick={function() { setEditing(true); }} style={{ width: "100%", background: "transparent", border: "1px solid " + BR2, color: TM, borderRadius: 10, padding: "11px 0", fontSize: 12, cursor: "pointer" }}>
         ✏ プロフィール・数値を編集
       </button>
     </div>
   );
 }
- 
+
 // ── PA MODAL ─────────────────────────────────────────────────────────
 function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
   const [tab, setTab] = useState("profile");
@@ -876,7 +875,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
   const displayName = staffData.fullName || pa.last;
   const secColor = SEC_COLOR[pa.section] || G;
   const [clPct, setClPct] = useState(0);
- 
+
   useEffect(function() {
     sGet("bekkan-cl-" + pa.id).then(function(d) {
       if (!d) return;
@@ -887,18 +886,18 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
       setClPct(total > 0 ? Math.round((done / total) * 100) : 0);
     });
   }, [pa, lv]);
- 
+
   async function handleUpdate(form) {
     const next = Object.assign({}, allStaffData, { [pa.id]: Object.assign({}, staffData, form) });
     await onStaffUpdate(next);
   }
- 
+
   const tenure = calcTenure(staffData.startDate);
- 
+
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(6px)" }}>
       <div onClick={function(e) { e.stopPropagation(); }} style={{ background: C1, width: "100%", maxWidth: 560, height: "92vh", borderRadius: "16px 16px 0 0", display: "flex", flexDirection: "column", border: "1px solid " + BR2, borderBottom: "none", overflow: "hidden" }}>
- 
+
         <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid " + BR, flexShrink: 0 }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 10 }}>
             <div style={{ width: 50, height: 50, borderRadius: "50%", background: GB, border: "1.5px solid " + secColor + "55", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: secColor, flexShrink: 0, overflow: "hidden" }}>
@@ -934,7 +933,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
           </div>
           <GoldBar pct={clPct} />
         </div>
- 
+
         <div style={{ display: "flex", borderBottom: "1px solid " + BR, flexShrink: 0 }}>
           {[["profile","プロフィール"],["checklist","チェックリスト"],["ojt","OJT ログ"]].map(function([k, l]) {
             return (
@@ -944,7 +943,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
             );
           })}
         </div>
- 
+
         <div style={{ flex: 1, overflowY: "auto" }}>
           {tab === "profile"   && <ProfileTab pa={pa} staffData={staffData} onUpdate={handleUpdate} />}
           {tab === "checklist" && <ChecklistTab paId={pa.id} paLv={lv} />}
@@ -954,7 +953,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
     </div>
   );
 }
- 
+
 // ── PA CARD ───────────────────────────────────────────────────────────
 function PACard({ pa, staffData, allStaffData, onClick }) {
   const sd = getStaffData(pa.id, allStaffData || {});
@@ -965,7 +964,7 @@ function PACard({ pa, staffData, allStaffData, onClick }) {
   const secColor = SEC_COLOR[pa.section] || G;
   const [clPct, setClPct] = useState(0);
   const [hov, setHov] = useState(false);
- 
+
   useEffect(function() {
     sGet("bekkan-cl-" + pa.id).then(function(d) {
       if (!d) return;
@@ -976,7 +975,7 @@ function PACard({ pa, staffData, allStaffData, onClick }) {
       setClPct(total > 0 ? Math.round((done / total) * 100) : 0);
     });
   }, [pa, lv]);
- 
+
   return (
     <div
       onClick={onClick}
@@ -1014,14 +1013,14 @@ function PACard({ pa, staffData, allStaffData, onClick }) {
     </div>
   );
 }
- 
+
 // ── LOGIN MODAL ───────────────────────────────────────────────────────
 function LoginModal({ onClose }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
- 
+
   async function handleLogin() {
     setLoading(true); setError("");
     try {
@@ -1032,7 +1031,7 @@ function LoginModal({ onClose }) {
       setLoading(false);
     }
   }
- 
+
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000, backdropFilter: "blur(6px)", padding: 20 }}>
       <div onClick={function(e) { e.stopPropagation(); }} style={{ background: C1, border: "1px solid " + G + "44", borderRadius: 16, padding: 28, width: "100%", maxWidth: 340 }}>
@@ -1058,7 +1057,7 @@ function LoginModal({ onClose }) {
     </div>
   );
 }
- 
+
 // ── DASHBOARD ROOT ────────────────────────────────────────────────────
 export default function BekkanDashboard() {
   const [selected, setSelected] = useState(null);
@@ -1069,14 +1068,14 @@ export default function BekkanDashboard() {
   const [loaded, setLoaded] = useState(false);
   const [isManager, setIsManager] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
- 
+
   // Auth listener
   useEffect(function() {
     return onAuthStateChanged(auth, function(user) {
       setIsManager(!!user);
     });
   }, []);
- 
+
   // Real-time Firestore listener for staff data
   useEffect(function() {
     const unsub = sListen("bekkan-all-staff", function(data) {
@@ -1085,19 +1084,19 @@ export default function BekkanDashboard() {
     });
     return unsub;
   }, []);
- 
+
   async function handleStaffUpdate(next) {
     setAllStaffData(next);
     await sSet("bekkan-all-staff", next);
   }
- 
+
   const filtered = useMemo(function() {
     let list = STAFF_BASE.filter(function(p) {
       const sd = allStaffData[p.id] || {};
       const name = sd.fullName || p.last;
       return name.includes(search) && (filterSec === "ALL" || p.section === filterSec);
     });
- 
+
     if (sortBy === "name") {
       list = list.slice().sort(function(a, b) {
         return (allStaffData[a.id]?.fullName || a.last).localeCompare(allStaffData[b.id]?.fullName || b.last, "ja");
@@ -1126,11 +1125,11 @@ export default function BekkanDashboard() {
     }
     return list;
   }, [search, sortBy, filterSec, allStaffData]);
- 
+
   const secCounts = {};
   SECTIONS.forEach(function(s) { secCounts[s] = STAFF_BASE.filter(function(p) { return p.section === s; }).length; });
   const registered = STAFF_BASE.filter(function(p) { return !!(allStaffData[p.id] && allStaffData[p.id].startDate); }).length;
- 
+
   if (!loaded) {
     return (
       <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center", color: TM, fontFamily: "sans-serif" }}>
@@ -1138,14 +1137,14 @@ export default function BekkanDashboard() {
       </div>
     );
   }
- 
+
   const showGrouped = sortBy === "section" && filterSec === "ALL";
- 
+
   return (
     <div style={{ minHeight: "100vh", background: BG, color: TX, fontFamily: "'Noto Sans JP', sans-serif" }}>
       <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
       <style>{`* { box-sizing: border-box; } ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; } input, textarea, select { font-family: 'Noto Sans JP', sans-serif !important; } input[type=date]::-webkit-calendar-picker-indicator { filter: invert(0.5); }`}</style>
- 
+
       <div style={{ padding: "14px 20px 12px", borderBottom: "1px solid " + BR }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
@@ -1164,7 +1163,7 @@ export default function BekkanDashboard() {
           </div>
         </div>
       </div>
- 
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", borderBottom: "1px solid " + BR }}>
         {[
           { label: "在籍PA", value: STAFF_BASE.length, unit: "名" },
@@ -1182,7 +1181,7 @@ export default function BekkanDashboard() {
           );
         })}
       </div>
- 
+
       <div style={{ padding: "10px 14px", borderBottom: "1px solid " + BR, display: "flex", flexDirection: "column", gap: 7 }}>
         <input
           value={search}
@@ -1208,7 +1207,7 @@ export default function BekkanDashboard() {
           })}
         </div>
       </div>
- 
+
       {showGrouped ? (
         SECTIONS.filter(function(sec) { return filtered.some(function(p) { return p.section === sec; }); }).map(function(sec) {
           const secStaff = filtered.filter(function(p) { return p.section === sec; });
@@ -1238,7 +1237,7 @@ export default function BekkanDashboard() {
           )}
         </div>
       )}
- 
+
       {selected && (
         <PAModal
           pa={selected}
@@ -1252,7 +1251,7 @@ export default function BekkanDashboard() {
     </div>
   );
 }
- 
+
 /*
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ② Firestore セキュリティルール
@@ -1267,7 +1266,7 @@ service cloud.firestore {
     }
   }
 }
- 
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ③ StackBlitz セットアップ手順（全体の流れ）
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1283,4 +1282,3 @@ service cloud.firestore {
 10. App.tsx をこのファイルの内容に置き換え
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 */
- 
