@@ -83,7 +83,7 @@ const STAFF_BASE = [
   {id:48, last:"大谷",   section:"ソムリエ"},
 ];
 
-const DEFAULT_SD = { fullName:"", startDate:"", lv:0, shiftRate:0, lateCount:0, score:0 };
+const DEFAULT_SD = { fullName:"", startDate:"", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300 };
 
 const INITIAL_STAFF_DATA = {
   1:  {fullName:"堀口 敬巧",   startDate:"2011-07-02", lv:5, shiftRate:0, lateCount:0, score:0},
@@ -95,30 +95,30 @@ const INITIAL_STAFF_DATA = {
   7:  {fullName:"髙木 彰良",   startDate:"2024-07-02", lv:2, shiftRate:0, lateCount:0, score:0},
   8:  {fullName:"鈴木 大介",   startDate:"2024-07-26", lv:2, shiftRate:0, lateCount:0, score:0},
   9:  {fullName:"森 航佑",     startDate:"2024-08-18", lv:2, shiftRate:0, lateCount:0, score:0},
-  10: {fullName:"浦邉 真聖",   startDate:"2024-09-06", lv:1, shiftRate:0, lateCount:0, score:0},
-  11: {fullName:"髙木 一哉",   startDate:"2025-01-13", lv:0, shiftRate:0, lateCount:0, score:0},
-  12: {fullName:"古賀 尚章",   startDate:"2025-03-28", lv:0, shiftRate:0, lateCount:0, score:0},
-  13: {fullName:"須田 和太郎", startDate:"2025-06-06", lv:0, shiftRate:0, lateCount:0, score:0},
-  15: {fullName:"塚原 元気",   startDate:"2025-07-10", lv:0, shiftRate:0, lateCount:0, score:0},
-  16: {fullName:"阪田 駿策",   startDate:"2025-09-17", lv:0, shiftRate:0, lateCount:0, score:0},
-  17: {fullName:"鈴木 蓮太郎", startDate:"2025-09-27", lv:0, shiftRate:0, lateCount:0, score:0},
-  18: {fullName:"小川 壮健",   startDate:"2025-10-27", lv:0, shiftRate:0, lateCount:0, score:0},
-  19: {fullName:"馬越 翼",     startDate:"2025-11-14", lv:0, shiftRate:0, lateCount:0, score:0},
-  21: {fullName:"徳澤 佑",     startDate:"2026-01-11", lv:0, shiftRate:0, lateCount:0, score:0},
-  22: {fullName:"進藤 凜雄",   startDate:"2026-01-21", lv:0, shiftRate:0, lateCount:0, score:0},
-  23: {fullName:"佐藤 欄",     startDate:"2026-02-28", lv:1, shiftRate:0, lateCount:0, score:0},
-  26: {fullName:"古川 友哉",   startDate:"2026-02-27", lv:0, shiftRate:0, lateCount:0, score:0},
-  35: {fullName:"小倉 功也",   startDate:"2025-08-14", lv:0, shiftRate:0, lateCount:0, score:0},
-  36: {fullName:"澤出 慶太",   startDate:"2025-12-19", lv:5, shiftRate:0, lateCount:0, score:0},
-  37: {fullName:"辛 善道",     startDate:"2025-12-23", lv:5, shiftRate:0, lateCount:0, score:0},
-  38: {fullName:"中林 聖",     startDate:"2025-12-29", lv:5, shiftRate:0, lateCount:0, score:0},
-  40: {fullName:"横山 漣",     startDate:"2024-12-16", lv:0, shiftRate:0, lateCount:0, score:0},
-  41: {fullName:"伊藤 ゆめ",   startDate:"2025-09-24", lv:0, shiftRate:0, lateCount:0, score:0},
-  42: {fullName:"川端 菜月",   startDate:"2025-03-31", lv:0, shiftRate:0, lateCount:0, score:0},
-  43: {fullName:"野島 遥斗",   startDate:"2025-12-16", lv:0, shiftRate:0, lateCount:0, score:0},
-  44: {fullName:"丹羽 和",     startDate:"2026-01-24", lv:0, shiftRate:0, lateCount:0, score:0},
-  45: {fullName:"武田 裕司",   startDate:"2026-02-02", lv:0, shiftRate:0, lateCount:0, score:0},
-  48: {fullName:"大谷",         startDate:"2025-07-22", lv:0, shiftRate:0, lateCount:0, score:0},
+  10: {fullName:"浦邉 真聖",   startDate:"2024-09-06", lv:1, shiftRate:0, lateCount:0, score:0, wage:1500},
+  11: {fullName:"髙木 一哉",   startDate:"2025-01-13", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  12: {fullName:"古賀 尚章",   startDate:"2025-03-28", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  13: {fullName:"須田 和太郎", startDate:"2025-06-06", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  15: {fullName:"塚原 元気",   startDate:"2025-07-10", lv:0, shiftRate:0, lateCount:0, score:0, wage:1400},
+  16: {fullName:"阪田 駿策",   startDate:"2025-09-17", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  17: {fullName:"鈴木 蓮太郎", startDate:"2025-09-27", lv:0, shiftRate:0, lateCount:0, score:0, wage:1400},
+  18: {fullName:"小川 壮健",   startDate:"2025-10-27", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  19: {fullName:"馬越 翼",     startDate:"2025-11-14", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  21: {fullName:"徳澤 佑",     startDate:"2026-01-11", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  22: {fullName:"進藤 凜雄",   startDate:"2026-01-21", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  23: {fullName:"佐藤 欄",     startDate:"2026-02-28", lv:1, shiftRate:0, lateCount:0, score:0, wage:1500},
+  26: {fullName:"古川 友哉",   startDate:"2026-02-27", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  35: {fullName:"小倉 功也",   startDate:"2025-08-14", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  36: {fullName:"澤出 慶太",   startDate:"2025-12-19", lv:5, shiftRate:0, lateCount:0, score:0, wage:2000},
+  37: {fullName:"辛 善道",     startDate:"2025-12-23", lv:5, shiftRate:0, lateCount:0, score:0, wage:2000},
+  38: {fullName:"中林 聖",     startDate:"2025-12-29", lv:5, shiftRate:0, lateCount:0, score:0, wage:2000},
+  40: {fullName:"横山 漣",     startDate:"2024-12-16", lv:0, shiftRate:0, lateCount:0, score:0, wage:1400},
+  41: {fullName:"伊藤 ゆめ",   startDate:"2025-09-24", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  42: {fullName:"川端 菜月",   startDate:"2025-03-31", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  43: {fullName:"野島 遥斗",   startDate:"2025-12-16", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  44: {fullName:"丹羽 和",     startDate:"2026-01-24", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  45: {fullName:"武田 裕司",   startDate:"2026-02-02", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
+  48: {fullName:"大谷",         startDate:"2025-07-22", lv:0, shiftRate:0, lateCount:0, score:0, wage:1300},
 };
 
 function getStaffData(paId, allStaffData) {
@@ -133,16 +133,17 @@ function getStaffData(paId, allStaffData) {
     lateCount: fromDB.lateCount !== undefined ? fromDB.lateCount : initial.lateCount,
     score:     fromDB.score     !== undefined ? fromDB.score     : initial.score,
     photo:     fromDB.photo     || "",
+    wage:      fromDB.wage      !== undefined ? fromDB.wage : (initial.wage || 1300),
   };
 }
 
 const PHASE_META = [
-  {lv:0, phase:"PHASE 1", label:"新人",     wage:1300},
-  {lv:1, phase:"PHASE 2", label:"研修中",   wage:1400},
-  {lv:2, phase:"PHASE 3", label:"中堅",     wage:1500},
-  {lv:3, phase:"PHASE 4", label:"一人前",   wage:1600},
-  {lv:4, phase:"PHASE 5", label:"ベテラン", wage:1800},
-  {lv:5, phase:"完了",    label:"エース",   wage:2000},
+  {lv:0, phase:"PHASE 1", label:"新人"},
+  {lv:1, phase:"PHASE 2", label:"研修中"},
+  {lv:2, phase:"PHASE 3", label:"中堅"},
+  {lv:3, phase:"PHASE 4", label:"一人前"},
+  {lv:4, phase:"PHASE 5", label:"ベテラン"},
+  {lv:5, phase:"完了",    label:"エース"},
 ];
 
 const CHECKLIST = {
@@ -493,7 +494,6 @@ function ChecklistTab({ paId, paLv }) {
                   <PhaseTag phase={meta.phase} />
                   <div style={{ fontSize: 14, fontWeight: 700, color: TX, marginTop: 3 }}>
                     {meta.label}
-                    <span style={{ fontSize: 10, color: TM, fontWeight: 400, marginLeft: 8 }}>¥{meta.wage.toLocaleString()}/h</span>
                   </div>
                 </div>
                 <span style={{ fontSize: 11, color: pct === 100 ? G : TM }}>
@@ -695,6 +695,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
     lateCount: staffData.lateCount || 0,
     score:     staffData.score     || 0,
     photo:     staffData.photo     || "",
+    wage:      staffData.wage      || 1300,
   });
 
   useEffect(function() {
@@ -706,6 +707,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
       lateCount: staffData.lateCount || 0,
       score:     staffData.score     || 0,
       photo:     staffData.photo     || "",
+      wage:      staffData.wage      || 1300,
     });
   }, [staffData]);
 
@@ -771,9 +773,18 @@ function ProfileTab({ pa, staffData, onUpdate }) {
             </select>
           </div>
           <div>
-            <label style={labelStyle}>評価スコア</label>
-            <Stars value={form.score} onChange={function(r) { setForm(function(f) { return Object.assign({}, f, { score: r }); }); }} />
+            <label style={labelStyle}>時給（円）</label>
+            <select value={form.wage || 1300} onChange={function(e) { setForm(function(f) { return Object.assign({}, f, { wage: Number(e.target.value) }); }); }} style={inputStyle}>
+              {[1300,1400,1500,1600,1700,1800,1900,2000].map(function(w) {
+                return <option key={w} value={w}>¥{w.toLocaleString()}</option>;
+              })}
+            </select>
           </div>
+        </div>
+
+        <div style={{ marginBottom: 10 }}>
+          <label style={labelStyle}>評価スコア</label>
+          <Stars value={form.score} onChange={function(r) { setForm(function(f) { return Object.assign({}, f, { score: r }); }); }} />
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
@@ -849,7 +860,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
         {[
           ["セクション", pa.section],
           ["ランク", "Lv." + lv + " " + meta.label],
-          ["時給", "¥" + meta.wage.toLocaleString() + "/h"],
+          ["時給", "¥" + (staffData.wage || 1300).toLocaleString() + "/h"],
         ].map(function([k, v]) {
           return (
             <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid " + BR }}>
