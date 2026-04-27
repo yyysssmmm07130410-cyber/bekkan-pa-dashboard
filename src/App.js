@@ -690,7 +690,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
   const [form, setForm] = useState({
     fullName:  staffData.fullName  || "",
     startDate: staffData.startDate || "",
-    lv:        staffData.lv        || 1,
+    lv:        staffData.lv !== undefined ? staffData.lv : 0,
     shiftRate: staffData.shiftRate || 0,
     lateCount: staffData.lateCount || 0,
     score:     staffData.score     || 0,
@@ -701,7 +701,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
     setForm({
       fullName:  staffData.fullName  || "",
       startDate: staffData.startDate || "",
-      lv:        staffData.lv        || 1,
+      lv:        staffData.lv !== undefined ? staffData.lv : 0,
       shiftRate: staffData.shiftRate || 0,
       lateCount: staffData.lateCount || 0,
       score:     staffData.score     || 0,
@@ -715,7 +715,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
   }
 
   const tenure = calcTenure(staffData.startDate);
-  const lv = staffData.lv || 1;
+  const lv = staffData.lv !== undefined ? staffData.lv : 0;
   const meta = PHASE_META[lv] || PHASE_META[0];
 
   if (editing) {
@@ -871,7 +871,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
 function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
   const [tab, setTab] = useState("profile");
   const staffData = getStaffData(pa.id, allStaffData);
-  const lv = staffData.lv || 1;
+  const lv = staffData.lv !== undefined ? staffData.lv : 0;
   const displayName = staffData.fullName || pa.last;
   const secColor = SEC_COLOR[pa.section] || G;
   const [clPct, setClPct] = useState(0);
