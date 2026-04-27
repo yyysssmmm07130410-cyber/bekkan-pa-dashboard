@@ -5,12 +5,12 @@ import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from
 
 // ━━━ ① ここをFirebaseの設定に書き換えてください ━━━
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID",
+  apiKey:            "AIzaSyBLG1Xkh1Oba_gdwG_jZAPaV8hLIDBQBsA",
+  authDomain:        "bekkan-pa.firebaseapp.com",
+  projectId:         "bekkan-pa",
+  storageBucket:     "bekkan-pa.firebasestorage.app",
+  messagingSenderId: "688298009058",
+  appId:             "1:688298009058:web:ace8b15bfd40604aef59bb",
 };
 const firebaseApp = initializeApp(FIREBASE_CONFIG);
 const db   = getFirestore(firebaseApp);
