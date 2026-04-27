@@ -128,7 +128,7 @@ function getStaffData(paId, allStaffData) {
   return {
     fullName:  fromDB.fullName  || initial.fullName,
     startDate: fromDB.startDate || initial.startDate,
-    lv:        fromDB.lv        || initial.lv,
+    lv:        fromDB.lv !== undefined ? fromDB.lv : initial.lv,
     shiftRate: fromDB.shiftRate !== undefined ? fromDB.shiftRate : initial.shiftRate,
     lateCount: fromDB.lateCount !== undefined ? fromDB.lateCount : initial.lateCount,
     score:     fromDB.score     !== undefined ? fromDB.score     : initial.score,
