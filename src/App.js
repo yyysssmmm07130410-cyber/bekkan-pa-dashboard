@@ -103,6 +103,7 @@ function getStaffData(paId, allStaffData) {
     photo:     fromDB.photo     || "",
   };
 }
+  const INITIAL_STAFF_DATA = {
   1:  {fullName:"堀口 敬巧",   startDate:"2011-07-02", lv:5, shiftRate:0, lateCount:0, score:0},
   2:  {fullName:"木村 大翔",   startDate:"2024-05-01", lv:3, shiftRate:0, lateCount:0, score:0},
   3:  {fullName:"杉野 航平",   startDate:"2024-05-01", lv:4, shiftRate:0, lateCount:0, score:0},
