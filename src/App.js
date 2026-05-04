@@ -878,6 +878,127 @@ function ProfileTab({ pa, staffData, onUpdate }) {
   );
 }
 
+// ── TRAINING TAB ──────────────────────────────────────────────────────
+const TRAINING_SECTIONS = [
+  "ランナー/TC・運搬","トップ","PR","K1〜6","R9A1",
+  "A2,3","Jr.1","Jr.2W","K7〜9","マリアモーゼ","SW",
+];
+
+function TrainingTab({ paId }) {
+  const [logs, setLogs] = useState({});
+  const [adding, setAdding] = useState(null);
+  const [date, setDate] = useState(todayStr());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(function() {
+    sGet("bekkan-training-" + paId).then(function(d) {
+      setLogs(d || {});
+      setLoading(false);
+    });
+  }, [paId]);
+
+  async function addLog(section) {
+    const current = logs[section] || [];
+    const next = Object.assign({}, logs, {
+      [section]: current.concat([{ date: date, count: current.length + 1 }])
+    });
+    setLogs(next);
+    await sSet("bekkan-training-" + paId, next);
+    setAdding(null);
+    setDate(todayStr());
+  }
+
+  async function deleteLog(section, index) {
+    const current = logs[section] || [];
+    const filtered = current.filter(function(_, i) { return i !== index; })
+      .map(function(log, i) { return Object.assign({}, log, { count: i + 1 }); });
+    const next = Object.assign({}, logs, { [section]: filtered });
+    setLogs(next);
+    await sSet("bekkan-training-" + paId, next);
+  }
+
+  if (loading) return <div style={{ padding: 32, color: TM, textAlign: "center" }}>読み込み中...</div>;
+
+  const totalCount = Object.values(logs).reduce(function(s, v) { return s + v.length; }, 0);
+  const expSections = Object.values(logs).filter(function(v) { return v.length > 0; }).length;
+
+  return (
+    <div style={{ paddingBottom: 60 }}>
+      {/* Summary */}
+      <div style={{ padding: "12px 20px 14px", borderBottom: "1px solid " + BR, display: "flex", gap: 24 }}>
+        <div>
+          <div style={{ fontSize: 9, color: TM, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 3 }}>総研修回数</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: G }}>{totalCount}<span style={{ fontSize: 11, color: TM }}>回</span></div>
+        </div>
+        <div>
+          <div style={{ fontSize: 9, color: TM, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 3 }}>経験セクション</div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: G }}>{expSections}<span style={{ fontSize: 11, color: TM }}>/{TRAINING_SECTIONS.length}</span></div>
+        </div>
+      </div>
+
+      {/* Section list */}
+      {TRAINING_SECTIONS.map(function(sec) {
+        const secLogs = logs[sec] || [];
+        const isAdding = adding === sec;
+        return (
+          <div key={sec} style={{ borderBottom: "1px solid " + BR }}>
+            {/* Section header */}
+            <div style={{ padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: secLogs.length > 0 ? GB : C2, border: "1px solid " + (secLogs.length > 0 ? G + "44" : BR), display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ fontSize: 12, fontWeight: 900, color: secLogs.length > 0 ? G : TM }}>{secLogs.length}</span>
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: secLogs.length > 0 ? TX : TM }}>{sec}</div>
+                  {secLogs.length > 0 && (
+                    <div style={{ fontSize: 10, color: TM, marginTop: 1 }}>最終: {fmtDate(secLogs[secLogs.length - 1].date)}</div>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={function() { setAdding(isAdding ? null : sec); setDate(todayStr()); }}
+                style={{ fontSize: 11, fontWeight: 700, color: isAdding ? TM : G, background: isAdding ? C3 : GB, border: "1px solid " + (isAdding ? BR2 : G + "44"), borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}
+              >
+                {isAdding ? "キャンセル" : "＋ 記録"}
+              </button>
+            </div>
+
+            {/* Add form */}
+            {isAdding && (
+              <div style={{ padding: "0 20px 14px", background: GB }}>
+                <div style={{ marginBottom: 10 }}>
+                  <label style={labelStyle}>実施日</label>
+                  <input type="date" value={date} onChange={function(e) { setDate(e.target.value); }} style={inputStyle} />
+                </div>
+                <div style={{ fontSize: 12, color: TM, marginBottom: 12 }}>
+                  記録後：<span style={{ color: G, fontWeight: 700 }}>第{secLogs.length + 1}回目</span>
+                </div>
+                <button onClick={function() { addLog(sec); }} style={{ width: "100%", background: G, color: "#000", border: "none", borderRadius: 8, padding: "10px 0", fontWeight: 700, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>
+                  記録する
+                </button>
+              </div>
+            )}
+
+            {/* Log history */}
+            {(secLogs.length > 0 && !isAdding) && (
+              <div style={{ padding: "0 20px 12px", display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {secLogs.map(function(log, i) {
+                  return (
+                    <div key={i} style={{ fontSize: 10, color: G, background: GB, border: "1px solid " + G + "33", borderRadius: 6, padding: "3px 8px", display: "flex", alignItems: "center", gap: 6 }}>
+                      第{log.count}回 {fmtDate(log.date)}
+                      <span onClick={function() { deleteLog(sec, i); }} style={{ cursor: "pointer", color: TM, fontSize: 10, marginLeft: 2 }}>×</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── PA MODAL ─────────────────────────────────────────────────────────
 function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
   const [tab, setTab] = useState("profile");
@@ -946,7 +1067,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
         </div>
 
         <div style={{ display: "flex", borderBottom: "1px solid " + BR, flexShrink: 0 }}>
-          {[["profile","プロフィール"],["checklist","チェックリスト"],["ojt","OJT ログ"]].map(function([k, l]) {
+          {[["profile","プロフィール"],["checklist","チェックリスト"],["ojt","OJT ログ"],["training","研修記録"]].map(function([k, l]) {
             return (
               <button key={k} onClick={function() { setTab(k); }} style={{ flex: 1, background: "transparent", border: "none", borderBottom: "2px solid " + (tab === k ? G : "transparent"), color: tab === k ? G : TM, padding: "12px 0", fontSize: 12, fontWeight: tab === k ? 700 : 400, cursor: "pointer", fontFamily: "inherit" }}>
                 {l}
@@ -959,6 +1080,7 @@ function PAModal({ pa, onClose, allStaffData, onStaffUpdate }) {
           {tab === "profile"   && <ProfileTab pa={pa} staffData={staffData} onUpdate={handleUpdate} />}
           {tab === "checklist" && <ChecklistTab paId={pa.id} paLv={lv} />}
           {tab === "ojt"       && <OJTTab paId={pa.id} />}
+          {tab === "training"  && <TrainingTab paId={pa.id} />}
         </div>
       </div>
     </div>
