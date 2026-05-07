@@ -449,6 +449,17 @@ const labelStyle = {
 function ChecklistTab({ paId, paLv }) {
   const [checks, setChecks] = useState({});
   const [loading, setLoading] = useState(true);
+  const [openPhases, setOpenPhases] = useState(function() {
+    const init = {};
+    init[paLv + 1] = true; // open current phase by default
+    return init;
+  });
+
+  function togglePhase(lv) {
+    setOpenPhases(function(prev) {
+      return Object.assign({}, prev, { [lv]: !prev[lv] });
+    });
+  }
 
   useEffect(function() {
     sGet("bekkan-cl-" + paId).then(function(d) {
@@ -488,7 +499,7 @@ function ChecklistTab({ paId, paLv }) {
 
         return (
           <div key={lv} style={{ opacity: active ? 1 : 0.4 }}>
-            <div style={{ padding: "14px 20px 10px", borderBottom: "1px solid " + BR, background: lvNum === paLv + 1 ? GB : "transparent", position: "sticky", top: 0, zIndex: 2 }}>
+            <div onClick={function() { togglePhase(lvNum); }} style={{ padding: "14px 20px 10px", borderBottom: "1px solid " + BR, background: lvNum === paLv + 1 ? GB : "transparent", position: "sticky", top: 0, zIndex: 2, cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 8 }}>
                 <div>
                   <PhaseTag phase={meta.phase} />
@@ -496,13 +507,16 @@ function ChecklistTab({ paId, paLv }) {
                     {meta.label}
                   </div>
                 </div>
-                <span style={{ fontSize: 11, color: pct === 100 ? G : TM }}>
-                  {done}/{lvKeys.length} {pct === 100 ? "✓" : pct + "%"}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontSize: 11, color: pct === 100 ? G : TM }}>
+                    {done}/{lvKeys.length} {pct === 100 ? "✓" : pct + "%"}
+                  </span>
+                  <span style={{ fontSize: 14, color: TM, display: "inline-block", transform: openPhases[lvNum] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform .2s" }}>▾</span>
+                </div>
               </div>
               <GoldBar pct={pct} />
             </div>
-            {cats.map(function(cat, ci) {
+            {openPhases[lvNum] && cats.map(function(cat, ci) {
               return (
                 <div key={ci}>
                   <div style={{ padding: "9px 20px 5px", fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: cat.promo ? G : TM, textTransform: "uppercase", borderBottom: "1px solid " + BR }}>
@@ -881,7 +895,7 @@ function ProfileTab({ pa, staffData, onUpdate }) {
 // ── TRAINING TAB ──────────────────────────────────────────────────────
 const TRAINING_SECTIONS = [
   "ランナー/TC・運搬","トップ","PR","K1〜6","R9A1",
-  "A2,3","Jr.1","Jr.2W","K7〜9","マリアモーゼ","SW",
+  "A2,3","Jr.1","Jr.2W","K7〜9","マリアモーゼ","SW","BAR",
 ];
 
 function TrainingTab({ paId }) {
